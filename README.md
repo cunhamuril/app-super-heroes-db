@@ -1,7 +1,9 @@
 # App Super Heroes Database 🦸
 
 ## 💻 Projeto
-Aplicativo que busca informações de super heróis de HQ de uma [API pública](https://superheroapi.com/)
+- Aplicativo que busca informações de super heróis de HQ de uma [API pública](https://superheroapi.com/)
+- [Protótipo](https://www.figma.com/proto/Nh0cLcqmjLXIVqJkD58t0E/Superheroes-Database?node-id=1%3A2&scaling=scale-down)
+
 
 ## 🚀 Tecnologias utilizadas
 - [React Native](https://facebook.github.io/react-native/)
