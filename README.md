@@ -13,6 +13,6 @@
 Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para mais detalhes.
 
 ## 👨‍💻 Desenvolvimento
-- Executar `expo start`. Servidor de desenvolvimento do Expo deverá iniciar.
+- Executar `yarn` para instalar todas as dependências e depois executar `expo start`. Servidor de desenvolvimento do Expo deverá iniciar.
 
 
