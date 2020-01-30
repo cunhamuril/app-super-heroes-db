@@ -11,16 +11,21 @@ import {
 import ProgressBar from "react-native-progress/Bar";
 
 import logo from '../../../assets/logo.png'
-import profile from '../../../assets/profile.jpg'
 
 import { theme } from "../../config/app.json";
 
 import BeforeSearch from './BeforeSearch'
 
-const Main = ({ fontLoaded }) => {
-  const [dataLoaded, setDataLoaded] = useState(true);
+const Main = ({ fontLoaded, data }) => {
   const [dataError, setDataError] = useState(false);
-  const [data, setData] = useState({});
+
+  useEffect(() => {
+    function setError() {
+      setDataError(data === false ? true : false)
+    }
+
+    setError()
+  }, [data]);
 
   function renderSession(title, data) {
     return (
@@ -46,7 +51,7 @@ const Main = ({ fontLoaded }) => {
     )
   }
 
-  if (!dataLoaded && !dataError) return (
+  if (!data && !dataError) return (
     <BeforeSearch logo={logo} text="Search for a super hero or villain " fontLoaded={fontLoaded} />
   )
 
@@ -54,86 +59,92 @@ const Main = ({ fontLoaded }) => {
     <BeforeSearch error={dataError} text={"character with given name not found"} fontLoaded={fontLoaded} />
   )
 
-  else return (
-    <ScrollView>
-      <View style={styles.container}>
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+      {!dataError && data.results.map(char => (
+        <View style={styles.container} key={char.id}>
 
-        <View style={styles.profileContainer}>
-          <Image source={profile} style={styles.imgProfile} />
-          <View style={styles.infoContainer}>
-            <Text style={{
-              ...styles.txtName,
-              fontFamily: fontLoaded ? 'bangers-regular' : 'normal'
-            }}>Joker</Text>
-            <View style={styles.hrLine} />
-            <Text style={{
-              ...styles.txtSession,
-              textAlign: 'center',
-              fontFamily: fontLoaded ? 'bangers-regular' : 'normal'
-            }}>Powerstats</Text>
-            <SafeAreaView>
-              <FlatList
-                data={[
-                  { id: "item1", statName: 'Intelligence', statPerc: 100 / 100 },
-                  { id: "item2", statName: 'Strength', statPerc: 10 / 100 },
-                  { id: "item3", statName: 'Speed', statPerc: 12 / 100 },
-                  { id: "item4", statName: 'Durability', statPerc: 60 / 100 },
-                  { id: "item5", statName: 'Power', statPerc: 43 / 100 },
-                  { id: "item6", statName: 'Combat', statPerc: 70 / 100 },
-                ]}
-                renderItem={({ item }) => (
-                  <View style={styles.statsContainer}>
-                    <Text style={styles.txtStat}>{item.statName}</Text>
-                    <ProgressBar progress={item.statPerc} width={120} height={7} color={theme.secondaryColor} />
-                  </View>
-                )}
-                keyExtractor={item => item.id}
-              />
-            </SafeAreaView>
+          <View style={styles.profileContainer}>
+            <Image
+              source={{ uri: char.image.url }}
+              style={styles.imgProfile}
+            />
+            <View style={styles.infoContainer}>
+              <Text style={{
+                ...styles.txtName,
+                fontFamily: fontLoaded ? 'bangers-regular' : 'normal'
+              }}>{char.name}</Text>
+              <View style={styles.hrLine} />
+              <Text style={{
+                ...styles.txtSession,
+                textAlign: 'center',
+                fontFamily: fontLoaded ? 'bangers-regular' : 'normal'
+              }}>Powerstats</Text>
+              <SafeAreaView>
+                <FlatList
+                  data={[
+                    { id: "item1", statName: 'Intelligence', statPerc: char.powerstats.intelligence / 100 },
+                    { id: "item2", statName: 'Strength', statPerc: char.powerstats.strength / 100 },
+                    { id: "item3", statName: 'Speed', statPerc: char.powerstats.speed / 100 },
+                    { id: "item4", statName: 'Durability', statPerc: char.powerstats.durability / 100 },
+                    { id: "item5", statName: 'Power', statPerc: char.powerstats.power / 100 },
+                    { id: "item6", statName: 'Combat', statPerc: char.powerstats.combat / 100 },
+                  ]}
+                  renderItem={({ item }) => (
+                    <View style={styles.statsContainer}>
+                      <Text style={styles.txtStat}>{item.statName}</Text>
+                      <ProgressBar progress={item.statPerc} width={120} height={7} color={theme.secondaryColor} />
+                    </View>
+                  )}
+                  keyExtractor={item => item.id}
+                />
+              </SafeAreaView>
+            </View>
           </View>
+
+          {renderSession(
+            "Biography",
+            [
+              { name: "Full name", value: char.biography["full-name"] },
+              { name: "Alter egos", value: char.biography["alter-egos"] },
+              { name: "Aliases", value: char.biography.aliases.join(', ') },
+              { name: "Place of birth", value: char.biography["place-of-birth"] },
+              { name: "First Appearence", value: char.biography["first-appearance"] },
+              { name: "Publisher", value: char.biography.publisher },
+              { name: "Alignment", value: char.biography.alignment },
+            ]
+          )}
+
+          {renderSession(
+            "Appearance",
+            [
+              { name: "Gender", value: char.appearance.gender },
+              { name: "Race", value: char.appearance.race },
+              { name: "Height", value: char.appearance.height[1] },
+              { name: "Weight", value: char.appearance.weight[1] },
+              { name: "Eye color:", value: char.appearance["eye-color"] },
+              { name: "Hair color:", value: char.appearance["hair-color"] },
+            ]
+          )}
+
+          {renderSession(
+            "Work",
+            [
+              { name: "Occupation", value: char.work.occupation },
+              { name: "Base", value: char.work.base },
+            ]
+          )}
+
+          {renderSession(
+            "Connections",
+            [
+              { name: "Group Affiliation", value: char.connections["group-affiliation"] },
+              { name: "Relatives", value: char.connections.relatives },
+            ]
+          )}
+
         </View>
-
-        {renderSession(
-          "Biography",
-          [
-            { name: "Full name", value: "Jack Napier" },
-            { name: "Alter egos", value: "No alter egos found." },
-            { name: "Aliases", value: "Red Hood I, Clown Prince of Crime, Harlequin of Hate, Jack Napier, Joe Kerr, Mr. J" },
-            { name: "First Appearence", value: "Batman #1 (Spring 1940)" },
-            { name: "Publisher", value: "DC Comics" },
-            { name: "Alignment", value: "badd" },
-          ]
-        )}
-
-        {renderSession(
-          "Appearance",
-          [
-            { name: "Gender", value: "Male" },
-            { name: "Race", value: "Human" },
-            { name: "Height", value: "196 cm" },
-            { name: "Weight", value: "86 kg" },
-            { name: "Eye color:", value: "Green" },
-            { name: "Hair color:", value: "Green" },
-          ]
-        )}
-
-        {renderSession(
-          "Work",
-          [
-            { name: "Occupation", value: "Male" },
-            { name: "Base", value: "Arkham Asylum, Gotham City; Ha-Hacienda" },
-          ]
-        )}
-
-        {renderSession(
-          "Connections",
-          [
-            { name: "Group Affiliation", value: "Black Glove, Injustice Gang, Injustice League, Joker League of Anarchy" },
-            { name: "Base", value: "Jeannie (wife, deceased); Unborn son (deceased); Melvin Reipan (cousin, deceased)" },
-          ]
-        )}
-
-      </View>
+      ))}
     </ScrollView>
   )
 };
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 30,
     borderRadius: 15,
-    maxWidth: 380,
+    minWidth: 380
   },
 
   /**
@@ -177,7 +188,8 @@ const styles = StyleSheet.create({
   },
 
   imgProfile: {
-    maxWidth: 120,
+    width: 120,
+    height: 400,
     borderRadius: 15,
     marginLeft: 15,
     resizeMode: 'center',

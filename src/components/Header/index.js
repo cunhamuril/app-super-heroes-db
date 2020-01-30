@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   SafeAreaView,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { theme } from "../../config/app.json";
 
-const Header = ({ fontLoaded }) => {
+const Header = ({ fontLoaded, onSubmit }) => {
+  const [search, setSearch] = useState("");
+
+  function handleSubmit() {
+    onSubmit(search)
+    setSearch("")
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Text
@@ -28,8 +35,14 @@ const Header = ({ fontLoaded }) => {
           placeholder="Search"
           placeholderTextColor="#999"
           autoCorrect={false}
+          onChangeText={text => setSearch(text)}
+          value={search}
+          onSubmitEditing={handleSubmit}
         />
-        <TouchableOpacity style={styles.searchButton}>
+        <TouchableOpacity
+          style={styles.searchButton}
+          onPress={handleSubmit}
+        >
           <MaterialIcons name="search" size={20} color={theme.primaryColor} />
         </TouchableOpacity>
       </View>
