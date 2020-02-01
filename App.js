@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, YellowBox, ActivityIndicator } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  YellowBox,
+  // ActivityIndicator,
+} from 'react-native';
 import Toast from 'react-native-simple-toast'
 import * as Font from 'expo-font'
+import LottieView from "lottie-react-native";
 
 import Header from './src/components/Header'
 import Main from './src/components/Main'
@@ -9,6 +15,8 @@ import Main from './src/components/Main'
 import api from './src/services/api'
 
 import { theme } from './src/config/app.json'
+
+import lottie from './assets/lottie.json'
 
 // Ignorar tela de warning
 YellowBox.ignoreWarnings([
@@ -56,7 +64,18 @@ export default function App() {
     <View style={styles.container}>
       <Header fontLoaded={fontLoaded} onSubmit={loadData} />
       <View style={styles.mainContainer}>
-        {loading ? <ActivityIndicator size="large" color={theme.secondaryColor} />
+        {/* {loading ? <ActivityIndicator size="large" color={theme.secondaryColor} /> */}
+        {loading
+          ? <LottieView
+            source={lottie}
+            style={{
+              // width: 400,
+              // height: 400,
+              backgroundColor: theme.primaryColor
+            }}
+            autoPlay
+            loop
+          />
           : <Main
             fontLoaded={fontLoaded}
             data={Object.keys(data).length === 0 ? null : data.error ? false : data}
@@ -75,7 +94,8 @@ const styles = StyleSheet.create({
 
   mainContainer: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'stretch',
+    padding: 10,
     justifyContent: 'center',
   }
 });

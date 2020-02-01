@@ -27,11 +27,12 @@ const BeforeSearch = ({ logo, text, error, fontLoaded }) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: -100
+    alignSelf: 'center'
   },
 
   logo: {
-    maxHeight: 250,
+    alignSelf: 'center',
+    maxHeight: 200,
     resizeMode: "contain",
   },
 
